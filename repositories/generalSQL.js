@@ -16,7 +16,7 @@ const selectByID = (table, primaryKeyName) => (req, res) => {
   let sql = `SELECT * FROM ${table} WHERE ${primaryKeyName} = ${req.params.id}`
   execSQL(sql)
     .then((rows) => {
-      responser.ok(res, rows)
+      responser.ok(res, rows[0])
     })
     .catch((err) => {
       responser.bad(res, err)
