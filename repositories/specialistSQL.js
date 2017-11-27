@@ -2,13 +2,47 @@ const execSQL = require('./maria').execQuery
 const responser = require('./responser')
 
 const staffMVP = (req, res) => { //พนักงานที่ขายของเยอะสุด
-  let sql = 'SELECT s.* FROM staffs s join bills b on s.staffNo = b.staffNo join productbills on b.billNo = productbills.billNo GROUP BY b.staffNo HAVING SUM(productbills.price) = ( SELECT MAX(b.num) FROM ( SELECT SUM(price) as "num" FROM bills bi join staffs on bi.staffNo = staffs.staffNo join productbills on productbills.billNo = bi.billNo GROUP BY bi.staffNo ) b )'
-  console.log(sql)
+  let sql = `SELECT 
+    s.staffNo,
+    s.firstname,
+    s.lastname,
+    SUM(productbills.price) as "num"
+  FROM
+  staffs s
+  join bills b on s.staffNo = b.staffNo
+  join productbills on b.billNo = productbills.billNo
+  WHERE
+  b.dateOfBill BETWEEN "${req.body.data.start}" AND "${req.body.data.end}"
+  GROUP BY
+  1,
+    2,
+    3
+  HAVING
+  SUM(productbills.price) = (
+    SELECT 
+			MAX(b.totalSale)
+  FROM
+    (
+    SELECT 
+					SUM(price) as "totalSale" 
+				FROM 
+					bills bi 
+					join staffs on bi.staffNo = staffs.staffNo 
+          join productbills on productbills.billNo = bi.billNo 
+        WHERE
+          bi.dateOfBill BETWEEN "${req.body.data.start}" AND "${req.body.data.end}"
+				GROUP BY 
+					bi.staffNo
+    ) b
+	)`
+  // console.log(sql)
   execSQL(sql)
     .then((rows) => {
+      console.log(rows)
       responser.ok(res, rows[0])
     })
     .catch((err) => {
+      console.log(err)
       responser.bad(res, err)
     })
 }

@@ -15,7 +15,7 @@ router.get('/product', (req, res) => {
 })
 
 /* Specialist API */
-router.get('/staffs/mvp', specialistSQL.staffMVP)
+router.post('/staffs/mvp', specialistSQL.staffMVP)
 router.post('/sale/day', specialistSQL.priceSum)
 router.get('/staffs/boss', specialistSQL.whoTheBoss)
 
