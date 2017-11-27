@@ -6,7 +6,7 @@ const staffMVP = (req, res) => { //พนักงานที่ขายขอ
   console.log(sql)
   execSQL(sql)
     .then((rows) => {
-      responser.ok(res, rows)
+      responser.ok(res, rows[0])
     })
     .catch((err) => {
       responser.bad(res, err)
