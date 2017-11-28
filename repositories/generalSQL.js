@@ -50,6 +50,7 @@ const insertInto = (table) => (req, res) => {
       responser.ok(res, rows)
     })
     .catch((err) => {
+      console.log(err)
       responser.bad(res, err)
     })
 }
